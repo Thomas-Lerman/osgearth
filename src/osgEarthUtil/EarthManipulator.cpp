@@ -1945,6 +1945,18 @@ void
 EarthManipulator::zoom( double dx, double dy )
 {    
     double scale = 1.0f + dy;
+#define NEW_ZOOM_TESTS 0
+#if NEW_ZOOM_TESTS
+    if (dy <= -1.0)
+    { // scale will become negative, which is bad
+        // -1.5 for the mouse wheel direction (always seen it as either +1.5 or -1.5)
+        // the other number is the time for 1 frame if going 60fps
+//        dy = -1.5 * 0.016666666666666666666666666666667;
+    }
+    // 75% of each mouse wheel click and this gets called twice.
+    double percent = sqrt(0.9375);//0.875);//0.75);
+    scale = ((dy < 0.0) ? percent : (1.0 / percent));
+#endif // NEW_ZOOM_TESTS
     setDistance( _distance * scale );    
 }
 
